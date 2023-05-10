@@ -4,7 +4,7 @@ defmodule PtestWeb.PerfLive.Index do
   def mount(_params, _session, socket) do
     {timer, _} = :timer.tc(fn -> shell_out() end)
 
-    IO.puts("shell_out took #{timer} microseconds")
+    IO.puts("shell_out took #{timer} microseconds from mount")
 
     {:ok, socket}
   end
@@ -16,15 +16,16 @@ defmodule PtestWeb.PerfLive.Index do
   end
 
   def handle_event("refresh", _params, socket) do
+    :erlang.garbage_collect()
     {timer, _} = :timer.tc(fn -> shell_out() end)
+    :erlang.garbage_collect()
 
-    IO.puts("shell_out took #{timer} microseconds")
+    IO.puts("shell_out took #{timer} microseconds from handle_event")
 
     {:noreply, socket}
   end
 
   def shell_out() do
-    {output, _} = System.cmd("less", ["mix.exs"])
-    output
+    System.cmd("less", ["mix.exs"])
   end
 end
