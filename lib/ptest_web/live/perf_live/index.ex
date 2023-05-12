@@ -16,9 +16,7 @@ defmodule PtestWeb.PerfLive.Index do
   end
 
   def handle_event("refresh", _params, socket) do
-    :erlang.garbage_collect()
     {timer, _} = :timer.tc(fn -> shell_out() end)
-    :erlang.garbage_collect()
 
     IO.puts("shell_out took #{timer} microseconds from handle_event")
 
@@ -26,6 +24,6 @@ defmodule PtestWeb.PerfLive.Index do
   end
 
   def shell_out() do
-    System.cmd("less", ["mix.exs"])
+    System.cmd("true", [])
   end
 end
